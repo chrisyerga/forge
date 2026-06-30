@@ -1,0 +1,102 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+
+      - run: pnpm build
+        env:
+          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          build-args: |
+            VITE_CONVEX_URL=${{ secrets.VITE_CONVEX_URL }}
+          tags: |
+            ghcr.io/chrisyerga/forge:${{ github.sha }}
+            ghcr.io/chrisyerga/forge:latest
+
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PORCH_HOST || secrets.DO_HOST }}
+          username: ${{ secrets.PORCH_USER || secrets.DO_USER }}
+          key: ${{ secrets.PORCH_SSH_KEY || secrets.DO_SSH_KEY }}
+          script: |
+            bash -lc '
+              set -e
+              [ -f "$HOME/.bashrc" ] && PS1=porch-ci . "$HOME/.bashrc"
+              set -u
+
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+              : "${DIGITALOCEAN_TOKEN:?DIGITALOCEAN_TOKEN must be available to Porch}"
+
+              npx --yes @lindale/porch service register \
+                --service-id forge \
+                --domain forge.lindale.tech \
+                --container forge-web \
+                --port 3000 \
+                --image ghcr.io/chrisyerga/forge:${{ github.sha }} \
+                --deploy-path /opt/forge \
+                --env CONVEX_URL=${{ secrets.VITE_CONVEX_URL }} \
+                --env VITE_CONVEX_URL=${{ secrets.VITE_CONVEX_URL }} \
+                --env FORGE_SERVER_SECRET=${{ secrets.FORGE_SERVER_SECRET }} \
+                --env OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+                --health-url https://forge.lindale.tech \
+                --json
+
+              cd /opt/porch
+              docker compose restart caddy
+            '
+
+  convex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec convex deploy --yes
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}

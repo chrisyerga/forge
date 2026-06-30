@@ -1,0 +1,20 @@
+# dependencies
+node_modules
+
+# build output
+.output
+.nitro
+dist
+.vite
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# convex (generated code IS committed so the Docker build can compile)
+# nothing to ignore here
+
+# misc
+.DS_Store
+*.log
