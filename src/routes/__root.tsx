@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
-import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import { Link, Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import { AppShell } from '@/components/AppShell'
+import { Button } from '@/components/ui/button'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
@@ -12,6 +14,7 @@ export const Route = createRootRoute({
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   component: RootComponent,
+  notFoundComponent: NotFound,
 })
 
 function RootComponent() {
@@ -33,5 +36,21 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function NotFound() {
+  return (
+    <RootDocument>
+      <AppShell>
+        <div className="flex flex-col items-center gap-4 py-24 text-center">
+          <h1 className="text-2xl font-semibold">Page not found</h1>
+          <p className="text-sm text-zinc-400">This route does not exist in Forge.</p>
+          <Link to="/">
+            <Button variant="secondary">Back to dashboard</Button>
+          </Link>
+        </div>
+      </AppShell>
+    </RootDocument>
   )
 }
