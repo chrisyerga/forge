@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { convexQuery } from '@convex-dev/react-query'
 import { useMutation } from 'convex/react'
@@ -83,7 +83,11 @@ function TasksPage() {
             ))}
             {tasks.data?.length === 0 ? (
               <p className="text-sm text-zinc-500">
-                No tasks yet. Submit one via <code className="text-zinc-400">POST /v1/tasks</code>.
+                No tasks yet.{' '}
+                <Link to="/task-runner" className="text-zinc-300 underline-offset-2 hover:underline">
+                  Run one
+                </Link>{' '}
+                or submit via <code className="text-zinc-400">POST /v1/tasks</code>.
               </p>
             ) : null}
           </div>

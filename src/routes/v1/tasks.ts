@@ -60,8 +60,9 @@ export const Route = createFileRoute('/v1/tasks')({
             maxIterations: body.maxIterations ?? recipe.defaultMaxIterations,
             callbackUrl: body.callbackUrl,
           })
-        } catch {
-          return json({ error: 'Project not found' }, 404)
+        } catch (error) {
+          console.error(`createTask error: ${error}`)
+          return json({ error: (error as Error).message }, 404)
         }
 
         getTaskEngine().enqueue(taskId)

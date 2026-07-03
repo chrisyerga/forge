@@ -9,6 +9,7 @@ const navLinks = [
   { to: '/', label: 'Dashboard' },
   { to: '/projects', label: 'Projects' },
   { to: '/tasks', label: 'Tasks' },
+  { to: '/task-runner', label: 'Task runner' },
   { to: '/keys', label: 'API Keys' },
   { to: '/playground', label: 'Playground' },
 ] as const

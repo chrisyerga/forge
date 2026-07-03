@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as TaskRunnerRouteImport } from './routes/task-runner'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as KeysRouteImport } from './routes/keys'
@@ -23,6 +24,11 @@ import { Route as V1TasksTaskIdInputRouteImport } from './routes/v1/tasks.$taskI
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaskRunnerRoute = TaskRunnerRouteImport.update({
+  id: '/task-runner',
+  path: '/task-runner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/projects': typeof ProjectsRoute
+  '/task-runner': typeof TaskRunnerRoute
   '/tasks': typeof TasksRoute
   '/v1/chat': typeof V1ChatRoute
   '/v1/generate': typeof V1GenerateRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/projects': typeof ProjectsRoute
+  '/task-runner': typeof TaskRunnerRoute
   '/tasks': typeof TasksRoute
   '/v1/chat': typeof V1ChatRoute
   '/v1/generate': typeof V1GenerateRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/projects': typeof ProjectsRoute
+  '/task-runner': typeof TaskRunnerRoute
   '/tasks': typeof TasksRoute
   '/v1/chat': typeof V1ChatRoute
   '/v1/generate': typeof V1GenerateRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/keys'
     | '/playground'
     | '/projects'
+    | '/task-runner'
     | '/tasks'
     | '/v1/chat'
     | '/v1/generate'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/keys'
     | '/playground'
     | '/projects'
+    | '/task-runner'
     | '/tasks'
     | '/v1/chat'
     | '/v1/generate'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/keys'
     | '/playground'
     | '/projects'
+    | '/task-runner'
     | '/tasks'
     | '/v1/chat'
     | '/v1/generate'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   KeysRoute: typeof KeysRoute
   PlaygroundRoute: typeof PlaygroundRoute
   ProjectsRoute: typeof ProjectsRoute
+  TaskRunnerRoute: typeof TaskRunnerRoute
   TasksRoute: typeof TasksRoute
   V1ChatRoute: typeof V1ChatRoute
   V1GenerateRoute: typeof V1GenerateRoute
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/task-runner': {
+      id: '/task-runner'
+      path: '/task-runner'
+      fullPath: '/task-runner'
+      preLoaderRoute: typeof TaskRunnerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   KeysRoute: KeysRoute,
   PlaygroundRoute: PlaygroundRoute,
   ProjectsRoute: ProjectsRoute,
+  TaskRunnerRoute: TaskRunnerRoute,
   TasksRoute: TasksRoute,
   V1ChatRoute: V1ChatRoute,
   V1GenerateRoute: V1GenerateRoute,
