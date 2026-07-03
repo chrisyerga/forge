@@ -30,6 +30,7 @@ served behind the shared Caddy edge at **https://forge.lindale.tech**.
 | `VITE_CONVEX_URL` | Convex client URL (public; build arg + runtime) |
 | `FORGE_SERVER_SECRET` | Shared secret for Node → Convex server functions |
 | `OPENAI_API_KEY` | OpenAI key used by the generation edge |
+| `TAVILY_API_KEY` | Tavily key used by the task harness research stage |
 | `CONVEX_DEPLOY_KEY` | Deploy Convex schema + functions |
 
 ## Runtime env (injected by Porch `--env`)
@@ -37,6 +38,7 @@ served behind the shared Caddy edge at **https://forge.lindale.tech**.
 - `CONVEX_URL`, `VITE_CONVEX_URL`
 - `FORGE_SERVER_SECRET`
 - `OPENAI_API_KEY`
+- `TAVILY_API_KEY`
 
 ## Convex deployment env (set once with `npx convex env set`)
 
@@ -57,6 +59,7 @@ npx --yes @lindale/porch service register \
   --env VITE_CONVEX_URL=... \
   --env FORGE_SERVER_SECRET=... \
   --env OPENAI_API_KEY=... \
+  --env TAVILY_API_KEY=... \
   --health-url https://forge.lindale.tech \
   --json
 ```

@@ -1,7 +1,10 @@
 import type { ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+import { convexQuery } from '@convex-dev/react-query'
 import { useConvexAuth } from '@convex-dev/auth/react'
 import { useAuthActions } from '@convex-dev/auth/react'
+import { api } from '../../convex/_generated/api'
 import { SignIn } from './SignIn'
 import { Button } from '@/components/ui/button'
 import { ForgeLogo } from '@/components/ForgeLogo'
@@ -18,6 +21,7 @@ const navLinks = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useConvexAuth()
   const { signOut } = useAuthActions()
+  const me = useQuery(convexQuery(api.users.me, {}))
 
   if (isLoading) {
     return (
@@ -51,9 +55,16 @@ export function AppShell({ children }: { children: ReactNode }) {
               ))}
             </nav>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => void signOut()}>
-            Sign out
-          </Button>
+          <div className="flex flex-col items-end gap-0.5">
+            {me.data?.email ? (
+              <span className="max-w-[200px] truncate text-xs text-emerald-300" title={me.data.email}>
+                {me.data.email}
+              </span>
+            ) : null}
+            <Button variant="ghost" size="sm" onClick={() => void signOut()}>
+              Sign out
+            </Button>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>

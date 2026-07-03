@@ -74,6 +74,7 @@ jobs:
                 --env VITE_CONVEX_URL=${{ secrets.VITE_CONVEX_URL }} \
                 --env FORGE_SERVER_SECRET=${{ secrets.FORGE_SERVER_SECRET }} \
                 --env OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+                --env TAVILY_API_KEY=${{ secrets.TAVILY_API_KEY }} \
                 --health-url https://forge.lindale.tech \
                 --json
 
