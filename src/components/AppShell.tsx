@@ -4,6 +4,7 @@ import { useConvexAuth } from '@convex-dev/auth/react'
 import { useAuthActions } from '@convex-dev/auth/react'
 import { SignIn } from './SignIn'
 import { Button } from '@/components/ui/button'
+import { ForgeLogo } from '@/components/ForgeLogo'
 
 const navLinks = [
   { to: '/', label: 'Dashboard' },
@@ -33,8 +34,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="border-b border-zinc-800">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-sm font-semibold">
-              Forge
+            <Link to="/" className="hover:opacity-90">
+              <ForgeLogo size="xs" />
             </Link>
             <nav className="flex items-center gap-4 text-sm text-zinc-400">
               {navLinks.map((link) => (

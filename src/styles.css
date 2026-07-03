@@ -12,3 +12,36 @@
     @apply bg-zinc-950 text-zinc-100 antialiased;
   }
 }
+
+@layer components {
+  .logo-dual-neon {
+    color: #67e8f9;
+    text-shadow:
+      0 0 4px #22d3ee,
+      0 0 12px #22d3ee,
+      0 0 28px #22d3ee,
+      0 0 48px #d946ef,
+      0 0 72px #c026d3;
+    animation: logo-pulse-cyan 3s ease-in-out infinite;
+  }
+}
+
+@keyframes logo-pulse-cyan {
+  0%,
+  100% {
+    text-shadow:
+      0 0 4px #22d3ee,
+      0 0 12px #22d3ee,
+      0 0 28px #22d3ee,
+      0 0 48px #d946ef,
+      0 0 72px #c026d3;
+  }
+  50% {
+    text-shadow:
+      0 0 6px #22d3ee,
+      0 0 18px #22d3ee,
+      0 0 36px #22d3ee,
+      0 0 60px #d946ef,
+      0 0 96px #c026d3;
+  }
+}

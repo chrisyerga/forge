@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ForgeLogo } from '@/components/ForgeLogo'
 
 export function SignIn() {
   const { signIn } = useAuthActions()
@@ -15,7 +16,9 @@ export function SignIn() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-lg">Forge</CardTitle>
+          <CardTitle className="flex justify-center">
+            <ForgeLogo size="sm" />
+          </CardTitle>
           <CardDescription>
             {flow === 'signIn' ? 'Sign in to your account' : 'Create a new account'}
           </CardDescription>

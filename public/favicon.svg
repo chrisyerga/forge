@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Forge">
+  <rect width="32" height="32" rx="6" fill="#09090b"/>
+  <defs>
+    <filter id="magenta-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur"/>
+      <feFlood flood-color="#d946ef" flood-opacity="0.85" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cyan-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+      <feFlood flood-color="#22d3ee" flood-opacity="0.9" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Block F: vertical stem + top bar + middle bar -->
+  <path
+    fill="#c026d3"
+    opacity="0.55"
+    filter="url(#magenta-glow)"
+    d="M9 7h13v3.5H13v4.5h8v3.5h-8V25H9V7z"
+  />
+  <path
+    fill="#67e8f9"
+    filter="url(#cyan-glow)"
+    d="M9 7h13v3.5H13v4.5h8v3.5h-8V25H9V7z"
+  />
+</svg>
