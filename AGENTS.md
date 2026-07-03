@@ -46,11 +46,15 @@ are captured here.
   These enable email/password sign-up. To regenerate auth keys use `npx @convex-dev/auth`
   or generate an RS256 keypair manually and set `JWT_PRIVATE_KEY` (PKCS8 PEM with newlines
   replaced by spaces) and `JWKS`.
-- `OPENAI_API_KEY` is **not** set here, so AI generation paths (`/v1/generate`,
-  `/v1/chat`, the playground, and the task harness `generate` stage) will error/return
-  empty. Auth, projects, entities, and API-key management all work without it. Set
-  `OPENAI_API_KEY` in `.env.local` to exercise generation. `TAVILY_API_KEY` is not needed
-  because `FORGE_SEARCH_PROVIDER=fake` returns canned search results.
+- `OPENAI_API_KEY` powers AI generation (`/v1/generate`, `/v1/chat`, the playground, and
+  the task harness `generate` stage; default model `gpt-4o-mini`). It is provided as a
+  cloud-agent secret, so a **fresh** shell has it in `process.env` and `pnpm dev` inherits
+  it automatically. Gotcha: a long-lived tmux/server shell started *before* the secret was
+  injected will have a stale env — restart the dev server from a fresh shell, or run
+  `set -a; . ./.env.local; set +a; pnpm dev` (the key is also mirrored into gitignored
+  `.env.local`). Without the key, only auth/projects/entities/API-keys work.
+  `TAVILY_API_KEY` is not needed because `FORGE_SEARCH_PROVIDER=fake` returns canned
+  search results.
 
 ### Lint / typecheck
 
