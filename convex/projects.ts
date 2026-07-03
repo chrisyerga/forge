@@ -48,6 +48,9 @@ export const update = authedMutation({
     name: v.optional(v.string()),
     kind: v.optional(projectKind),
     description: v.optional(v.string()),
+    defaultPersonaId: v.optional(v.id('personas')),
+    defaultStyleIds: v.optional(v.array(v.id('styles'))),
+    guidelines: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {

@@ -16,6 +16,10 @@ export const entityDoc = docValidator('entities')
 export const personaDoc = docValidator('personas')
 export const styleDoc = docValidator('styles')
 export const generationDoc = docValidator('generations')
+export const resourceDoc = docValidator('resources')
+export const taskDoc = docValidator('tasks')
+export const taskStepDoc = docValidator('taskSteps')
+export const artifactDoc = docValidator('artifacts')
 
 // API keys are returned without the secret hash.
 export const apiKeyPublic = v.object({

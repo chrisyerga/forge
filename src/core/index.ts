@@ -36,3 +36,38 @@ export {
   buildStyleBlock,
   interpolateTemplate,
 } from './prompts'
+
+export type {
+  CompetitorOutline,
+  ContentPlan,
+  CriterionScore,
+  Deliverable,
+  Evaluation,
+  InputRequest,
+  OutlineSection,
+  PlannedLink,
+  ResearchBundle,
+  Resource,
+  ResourceKind,
+  RevisionNotes,
+  Rubric,
+  RubricCriterion,
+  SerpEntry,
+  StageResult,
+  StepStatus,
+  TaskArtifact,
+  TaskContext,
+  TaskStatus,
+} from './tasks'
+
+export { ARTIFACT_KINDS, scoreEvaluation, stageArtifacts, stageNeedsInput } from './tasks'
+
+export {
+  buildEvaluationPrompt,
+  buildGenerateInstructions,
+  buildResearchSynthesisPrompt,
+  buildResourceBlock,
+  buildRevisionPrompt,
+  buildStrategyPrompt,
+  buildTaskContextBlock,
+} from './taskPrompts'

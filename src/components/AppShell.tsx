@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 const navLinks = [
   { to: '/', label: 'Dashboard' },
   { to: '/projects', label: 'Projects' },
+  { to: '/tasks', label: 'Tasks' },
   { to: '/keys', label: 'API Keys' },
   { to: '/playground', label: 'Playground' },
 ] as const

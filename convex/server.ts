@@ -6,7 +6,7 @@ import { generationStatus } from './schema'
 // TanStack Start Node server (via ConvexHttpClient). They are public functions
 // but gated by a shared secret (FORGE_SERVER_SECRET) set on both the Convex
 // deployment and the Node container. They must never be called from browsers.
-function assertServer(secret: string): void {
+export function assertServer(secret: string): void {
   const expected = process.env.FORGE_SERVER_SECRET
   if (!expected) throw new Error('FORGE_SERVER_SECRET is not configured')
   if (secret !== expected) throw new Error('Unauthorized')
@@ -40,6 +40,8 @@ export const recordGenerationStart = mutation({
     ownerId: v.id('users'),
     apiKeyId: v.optional(v.id('apiKeys')),
     projectId: v.optional(v.id('projects')),
+    taskId: v.optional(v.id('tasks')),
+    stage: v.optional(v.string()),
     source: v.union(v.literal('api'), v.literal('playground')),
     provider: v.string(),
     model: v.string(),
@@ -51,6 +53,8 @@ export const recordGenerationStart = mutation({
       ownerId: args.ownerId,
       apiKeyId: args.apiKeyId,
       projectId: args.projectId,
+      taskId: args.taskId,
+      stage: args.stage,
       source: args.source,
       provider: args.provider,
       model: args.model,

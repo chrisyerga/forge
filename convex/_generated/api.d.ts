@@ -18,8 +18,11 @@ import type * as lib_crypto from "../lib/crypto.js";
 import type * as lib_validators from "../lib/validators.js";
 import type * as personas from "../personas.js";
 import type * as projects from "../projects.js";
+import type * as resources from "../resources.js";
 import type * as server from "../server.js";
+import type * as serverTasks from "../serverTasks.js";
 import type * as styles from "../styles.js";
+import type * as tasks from "../tasks.js";
 import type * as users from "../users.js";
 
 import type {
@@ -39,8 +42,11 @@ declare const fullApi: ApiFromModules<{
   "lib/validators": typeof lib_validators;
   personas: typeof personas;
   projects: typeof projects;
+  resources: typeof resources;
   server: typeof server;
+  serverTasks: typeof serverTasks;
   styles: typeof styles;
+  tasks: typeof tasks;
   users: typeof users;
 }>;
 

@@ -13,6 +13,8 @@ export function createConvexGenerationLogger(
     ownerId: Id<'users'>
     apiKeyId?: Id<'apiKeys'>
     projectId?: Id<'projects'>
+    taskId?: Id<'tasks'>
+    stage?: string
   },
 ): GenerationLogger {
   let idPromise: Promise<Id<'generations'>> | undefined
@@ -24,6 +26,8 @@ export function createConvexGenerationLogger(
         ownerId: ctx.ownerId,
         apiKeyId: ctx.apiKeyId,
         projectId: ctx.projectId,
+        taskId: ctx.taskId,
+        stage: ctx.stage,
         source: ctx.source,
         provider,
         model,

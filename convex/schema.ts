@@ -60,6 +60,36 @@ export const generationStatus = v.union(
   v.literal('error'),
 )
 
+export const taskStatus = v.union(
+  v.literal('queued'),
+  v.literal('running'),
+  v.literal('needs_input'),
+  v.literal('complete'),
+  v.literal('failed'),
+  v.literal('canceled'),
+)
+
+export const stepStatus = v.union(
+  v.literal('running'),
+  v.literal('complete'),
+  v.literal('error'),
+  v.literal('needs_input'),
+)
+
+export const resourceKind = v.union(
+  v.literal('product'),
+  v.literal('article'),
+  v.literal('page'),
+  v.literal('offer'),
+  v.literal('other'),
+)
+
+export const inputRequest = v.object({
+  key: v.string(),
+  question: v.string(),
+  why: v.optional(v.string()),
+})
+
 export default defineSchema({
   ...authTables,
 
@@ -68,6 +98,10 @@ export default defineSchema({
     kind: projectKind,
     name: v.string(),
     description: v.optional(v.string()),
+    // Defaults resolved into every task run for this project.
+    defaultPersonaId: v.optional(v.id('personas')),
+    defaultStyleIds: v.optional(v.array(v.id('styles'))),
+    guidelines: v.optional(v.string()),
     metadata: v.optional(v.any()),
   }).index('by_owner', ['ownerId']),
 
@@ -129,6 +163,9 @@ export default defineSchema({
     ownerId: v.id('users'),
     apiKeyId: v.optional(v.id('apiKeys')),
     projectId: v.optional(v.id('projects')),
+    // Set when the generation happened inside a task run.
+    taskId: v.optional(v.id('tasks')),
+    stage: v.optional(v.string()),
     source: v.union(v.literal('api'), v.literal('playground')),
     provider: v.string(),
     model: v.string(),
@@ -142,5 +179,79 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index('by_owner', ['ownerId'])
-    .index('by_apiKey', ['apiKeyId']),
+    .index('by_apiKey', ['apiKeyId'])
+    .index('by_task', ['taskId']),
+
+  // Promotable project assets (products, partner links, existing content) the
+  // strategy stage may choose to work into generated content.
+  resources: defineTable({
+    ownerId: v.id('users'),
+    projectId: v.id('projects'),
+    kind: resourceKind,
+    title: v.string(),
+    url: v.string(),
+    description: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    priority: v.optional(v.number()),
+    metadata: v.optional(v.any()),
+  })
+    .index('by_owner', ['ownerId'])
+    .index('by_project', ['projectId']),
+
+  // A durable harness run: the API-facing unit of work.
+  tasks: defineTable({
+    ownerId: v.id('users'),
+    apiKeyId: v.optional(v.id('apiKeys')),
+    projectId: v.id('projects'),
+    recipe: v.string(),
+    recipeVersion: v.optional(v.number()),
+    status: taskStatus,
+    // Recipe-specific brief; validated against the recipe's schema at the API layer.
+    brief: v.any(),
+    // Accumulated answers to needs_input questions, keyed by question key.
+    answers: v.optional(v.record(v.string(), v.string())),
+    // Next stage to run (checkpoint pointer). Unset = first stage.
+    currentStage: v.optional(v.string()),
+    iteration: v.number(),
+    maxIterations: v.number(),
+    pendingInput: v.optional(v.array(inputRequest)),
+    callbackUrl: v.optional(v.string()),
+    errorMessage: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    finishedAt: v.optional(v.number()),
+  })
+    .index('by_owner', ['ownerId'])
+    .index('by_project', ['projectId'])
+    .index('by_status', ['status']),
+
+  // Audit/checkpoint log: one row per stage execution per iteration.
+  taskSteps: defineTable({
+    taskId: v.id('tasks'),
+    ownerId: v.id('users'),
+    stage: v.string(),
+    iteration: v.number(),
+    status: stepStatus,
+    startedAt: v.number(),
+    finishedAt: v.optional(v.number()),
+    promptTokens: v.optional(v.number()),
+    completionTokens: v.optional(v.number()),
+    totalTokens: v.optional(v.number()),
+    errorMessage: v.optional(v.string()),
+  }).index('by_task', ['taskId']),
+
+  // Typed stage outputs. `content` is a JSON string; `current` marks the
+  // latest artifact of each kind for the task.
+  artifacts: defineTable({
+    taskId: v.id('tasks'),
+    ownerId: v.id('users'),
+    stage: v.string(),
+    iteration: v.number(),
+    kind: v.string(),
+    content: v.string(),
+    storageId: v.optional(v.id('_storage')),
+    current: v.boolean(),
+  })
+    .index('by_task', ['taskId'])
+    .index('by_task_and_kind', ['taskId', 'kind']),
 })

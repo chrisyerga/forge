@@ -9,13 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as KeysRouteImport } from './routes/keys'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as V1TasksRouteImport } from './routes/v1/tasks'
 import { Route as V1GenerateRouteImport } from './routes/v1/generate'
 import { Route as V1ChatRouteImport } from './routes/v1/chat'
+import { Route as V1TasksTaskIdRouteImport } from './routes/v1/tasks.$taskId'
+import { Route as V1TasksTaskIdInputRouteImport } from './routes/v1/tasks.$taskId.input'
 
+const TasksRoute = TasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -36,6 +45,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const V1TasksRoute = V1TasksRouteImport.update({
+  id: '/v1/tasks',
+  path: '/v1/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const V1GenerateRoute = V1GenerateRouteImport.update({
   id: '/v1/generate',
   path: '/v1/generate',
@@ -46,22 +60,40 @@ const V1ChatRoute = V1ChatRouteImport.update({
   path: '/v1/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const V1TasksTaskIdRoute = V1TasksTaskIdRouteImport.update({
+  id: '/$taskId',
+  path: '/$taskId',
+  getParentRoute: () => V1TasksRoute,
+} as any)
+const V1TasksTaskIdInputRoute = V1TasksTaskIdInputRouteImport.update({
+  id: '/input',
+  path: '/input',
+  getParentRoute: () => V1TasksTaskIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/projects': typeof ProjectsRoute
+  '/tasks': typeof TasksRoute
   '/v1/chat': typeof V1ChatRoute
   '/v1/generate': typeof V1GenerateRoute
+  '/v1/tasks': typeof V1TasksRouteWithChildren
+  '/v1/tasks/$taskId': typeof V1TasksTaskIdRouteWithChildren
+  '/v1/tasks/$taskId/input': typeof V1TasksTaskIdInputRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/projects': typeof ProjectsRoute
+  '/tasks': typeof TasksRoute
   '/v1/chat': typeof V1ChatRoute
   '/v1/generate': typeof V1GenerateRoute
+  '/v1/tasks': typeof V1TasksRouteWithChildren
+  '/v1/tasks/$taskId': typeof V1TasksTaskIdRouteWithChildren
+  '/v1/tasks/$taskId/input': typeof V1TasksTaskIdInputRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,23 +101,50 @@ export interface FileRoutesById {
   '/keys': typeof KeysRoute
   '/playground': typeof PlaygroundRoute
   '/projects': typeof ProjectsRoute
+  '/tasks': typeof TasksRoute
   '/v1/chat': typeof V1ChatRoute
   '/v1/generate': typeof V1GenerateRoute
+  '/v1/tasks': typeof V1TasksRouteWithChildren
+  '/v1/tasks/$taskId': typeof V1TasksTaskIdRouteWithChildren
+  '/v1/tasks/$taskId/input': typeof V1TasksTaskIdInputRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/keys' | '/playground' | '/projects' | '/v1/chat' | '/v1/generate'
+    | '/'
+    | '/keys'
+    | '/playground'
+    | '/projects'
+    | '/tasks'
+    | '/v1/chat'
+    | '/v1/generate'
+    | '/v1/tasks'
+    | '/v1/tasks/$taskId'
+    | '/v1/tasks/$taskId/input'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/keys' | '/playground' | '/projects' | '/v1/chat' | '/v1/generate'
+  to:
+    | '/'
+    | '/keys'
+    | '/playground'
+    | '/projects'
+    | '/tasks'
+    | '/v1/chat'
+    | '/v1/generate'
+    | '/v1/tasks'
+    | '/v1/tasks/$taskId'
+    | '/v1/tasks/$taskId/input'
   id:
     | '__root__'
     | '/'
     | '/keys'
     | '/playground'
     | '/projects'
+    | '/tasks'
     | '/v1/chat'
     | '/v1/generate'
+    | '/v1/tasks'
+    | '/v1/tasks/$taskId'
+    | '/v1/tasks/$taskId/input'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,12 +152,21 @@ export interface RootRouteChildren {
   KeysRoute: typeof KeysRoute
   PlaygroundRoute: typeof PlaygroundRoute
   ProjectsRoute: typeof ProjectsRoute
+  TasksRoute: typeof TasksRoute
   V1ChatRoute: typeof V1ChatRoute
   V1GenerateRoute: typeof V1GenerateRoute
+  V1TasksRoute: typeof V1TasksRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tasks': {
+      id: '/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -127,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v1/tasks': {
+      id: '/v1/tasks'
+      path: '/v1/tasks'
+      fullPath: '/v1/tasks'
+      preLoaderRoute: typeof V1TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/v1/generate': {
       id: '/v1/generate'
       path: '/v1/generate'
@@ -141,16 +216,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof V1ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v1/tasks/$taskId': {
+      id: '/v1/tasks/$taskId'
+      path: '/$taskId'
+      fullPath: '/v1/tasks/$taskId'
+      preLoaderRoute: typeof V1TasksTaskIdRouteImport
+      parentRoute: typeof V1TasksRoute
+    }
+    '/v1/tasks/$taskId/input': {
+      id: '/v1/tasks/$taskId/input'
+      path: '/input'
+      fullPath: '/v1/tasks/$taskId/input'
+      preLoaderRoute: typeof V1TasksTaskIdInputRouteImport
+      parentRoute: typeof V1TasksTaskIdRoute
+    }
   }
 }
+
+interface V1TasksTaskIdRouteChildren {
+  V1TasksTaskIdInputRoute: typeof V1TasksTaskIdInputRoute
+}
+
+const V1TasksTaskIdRouteChildren: V1TasksTaskIdRouteChildren = {
+  V1TasksTaskIdInputRoute: V1TasksTaskIdInputRoute,
+}
+
+const V1TasksTaskIdRouteWithChildren = V1TasksTaskIdRoute._addFileChildren(
+  V1TasksTaskIdRouteChildren,
+)
+
+interface V1TasksRouteChildren {
+  V1TasksTaskIdRoute: typeof V1TasksTaskIdRouteWithChildren
+}
+
+const V1TasksRouteChildren: V1TasksRouteChildren = {
+  V1TasksTaskIdRoute: V1TasksTaskIdRouteWithChildren,
+}
+
+const V1TasksRouteWithChildren =
+  V1TasksRoute._addFileChildren(V1TasksRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   KeysRoute: KeysRoute,
   PlaygroundRoute: PlaygroundRoute,
   ProjectsRoute: ProjectsRoute,
+  TasksRoute: TasksRoute,
   V1ChatRoute: V1ChatRoute,
   V1GenerateRoute: V1GenerateRoute,
+  V1TasksRoute: V1TasksRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

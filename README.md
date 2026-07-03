@@ -72,6 +72,29 @@ Authenticate with `Authorization: Bearer <key>` where `<key>` is a Forge API key
 
 Returns an AI SDK UI message stream (consumable by `@ai-sdk/react`'s `useChat`).
 
+### `POST /v1/tasks`
+
+Submits an agentic harness run (research → strategy → generate → evaluate → revise)
+and returns `202 { taskId }` immediately. The loop runs on the app server and
+checkpoints every stage to Convex (`tasks`, `taskSteps`, `artifacts`).
+
+```jsonc
+{
+  "projectId": "<projects id>",        // persona/styles/entities/resources come from the project
+  "recipe": "seo_article",             // pipeline defined in src/harness/recipes/
+  "brief": { "keywords": ["how to calm dog during fireworks"], "audience": "US dog owners" },
+  "callbackUrl": "https://caller.example/webhook"  // optional webhook on completion
+}
+```
+
+- `GET /v1/tasks/:id` — status, current stage, pending questions, artifacts, and the
+  deliverable when complete.
+- `POST /v1/tasks/:id/input` — answer a `needs_input` pause (`{ "answers": { "voice": "..." } }`);
+  the task resumes at the stage that asked.
+
+The research stage needs `TAVILY_API_KEY` (or `FORGE_SEARCH_PROVIDER=fake` for local
+testing). The `/tasks` page in the web UI shows live runs, stage timelines, and artifacts.
+
 ### `POST /v1/generate`
 
 ```jsonc
