@@ -8,7 +8,6 @@ import { ForgeLogo } from '@/components/ForgeLogo'
 
 export function SignIn() {
   const { signIn } = useAuthActions()
-  const [flow, setFlow] = useState<'signIn' | 'signUp'>('signIn')
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -19,9 +18,7 @@ export function SignIn() {
           <CardTitle className="flex justify-center">
             <ForgeLogo size="sm" />
           </CardTitle>
-          <CardDescription>
-            {flow === 'signIn' ? 'Sign in to your account' : 'Create a new account'}
-          </CardDescription>
+          <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -31,7 +28,7 @@ export function SignIn() {
               setError(null)
               setSubmitting(true)
               const formData = new FormData(event.currentTarget)
-              formData.set('flow', flow)
+              formData.set('flow', 'signIn')
               void signIn('password', formData)
                 .catch((err: unknown) =>
                   setError(err instanceof Error ? err.message : 'Something went wrong'),
@@ -45,19 +42,18 @@ export function SignIn() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+              />
             </div>
             {error ? <p className="text-sm text-red-400">{error}</p> : null}
             <Button type="submit" className="w-full" disabled={submitting}>
-              {flow === 'signIn' ? 'Sign in' : 'Sign up'}
+              Sign in
             </Button>
-            <button
-              type="button"
-              className="w-full text-sm text-zinc-400 hover:text-zinc-200"
-              onClick={() => setFlow(flow === 'signIn' ? 'signUp' : 'signIn')}
-            >
-              {flow === 'signIn' ? 'Need an account? Sign up' : 'Have an account? Sign in'}
-            </button>
           </form>
         </CardContent>
       </Card>
