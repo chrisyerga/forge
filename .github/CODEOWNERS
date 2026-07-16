@@ -1,0 +1,15 @@
+# Require review from these owners before merging to protected branches.
+# Works with branch rulesets when "Require review from Code Owners" is enabled.
+#
+# Default: all files require approval from the repo owner.
+* @chrisyerga
+
+# Deployment, CI, and repository automation
+/.github/ @chrisyerga
+
+# Backend schema, auth, and server functions
+/convex/ @chrisyerga
+
+# Production deployment configuration
+/docker-compose.yml @chrisyerga
+/Dockerfile @chrisyerga
